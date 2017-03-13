@@ -118,7 +118,7 @@ func TestParse(t *testing.T) {
 		expr := parse(slangTestFile)
 		interpreter := &Interpreter{}
 		numericConst := interpreter.Visit(expr)
-		if -15.488372093 != numericConst.Value {
+		if -15.488372093023255 != numericConst.Value {
 			t.Errorf("Parse error expected −15.488372093 got %v", numericConst.Value)
 		}
 	})
@@ -131,7 +131,7 @@ func TestParse(t *testing.T) {
 		expr := parse(slangTestFile)
 		interpreter := &Interpreter{}
 		numericConst := interpreter.Visit(expr)
-		if 12.533333333 != numericConst.Value {
+		if 12.533333333333333 != numericConst.Value {
 			t.Errorf("Parse error expected 12.533333333 got %v", numericConst.Value)
 		}
 	})

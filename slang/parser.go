@@ -28,6 +28,7 @@ func ParseFromStream(data []byte) IExpr {
 func (parser *Parser) parseExpr() IExpr {
 	lexer := parser.Lexer
 	expr := parser.parseTerm()
+	// lexer.eat()
 	switch token := lexer.CurToken; token {
 	case ADD, SUB:
 		rightExp := parser.parseExpr()
@@ -40,12 +41,21 @@ func (parser *Parser) parseExpr() IExpr {
 //{Term} := {Factor} || {Factor} {'*' | '/'} {Term}
 func (parser *Parser) parseTerm() IExpr {
 	lexer := parser.Lexer
+	//operator predecense for division
 	expr := parser.parseFactor()
 	lexer.eat()
-	switch token := lexer.CurToken; token {
-	case MUL, DIV:
-		rightExp := parser.parseTerm()
-		expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+	token := lexer.CurToken
+	for token == DIV || token == MUL {
+		if lexer.CurToken == DIV {
+			rightExp := parser.parseFactor()
+			expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+			lexer.eat()
+			token = lexer.CurToken
+		} else {
+			rightExp := parser.parseTerm()
+			expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+			token = lexer.CurToken
+		}
 	}
 	return expr
 }
