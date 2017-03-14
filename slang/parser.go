@@ -28,12 +28,18 @@ func ParseFromStream(data []byte) IExpr {
 func (parser *Parser) parseExpr() IExpr {
 	lexer := parser.Lexer
 	expr := parser.parseTerm()
-	// lexer.eat()
-	switch token := lexer.CurToken; token {
-	case ADD, SUB:
-		rightExp := parser.parseExpr()
-		expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
 
+	// switch token := lexer.CurToken; token {
+	// case ADD, SUB:
+	// 	rightExp := parser.parseExpr()
+	// 	expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+
+	// }
+	token := lexer.CurToken
+	for token == ADD || token == SUB {
+		rightExp := parser.parseTerm()
+		expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+		token = lexer.CurToken
 	}
 	return expr
 }
@@ -46,16 +52,16 @@ func (parser *Parser) parseTerm() IExpr {
 	lexer.eat()
 	token := lexer.CurToken
 	for token == DIV || token == MUL {
-		if lexer.CurToken == DIV {
-			rightExp := parser.parseFactor()
-			expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
-			lexer.eat()
-			token = lexer.CurToken
-		} else {
-			rightExp := parser.parseTerm()
-			expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
-			token = lexer.CurToken
-		}
+		// if lexer.CurToken == DIV {
+		rightExp := parser.parseFactor()
+		expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+		lexer.eat()
+		token = lexer.CurToken
+		// } else {
+		// 	rightExp := parser.parseTerm()
+		// 	expr = &BinaryExpr{LeftExpr: expr, Operator: token, RightExpr: rightExp}
+		// 	token = lexer.CurToken
+		// }
 	}
 	return expr
 }
